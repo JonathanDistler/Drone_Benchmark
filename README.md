@@ -256,6 +256,49 @@ swarm up 0.5
 swarm down 0.5
 ```
 
+# Alternative Control Schemes
+
+Position control gives a NED coordinate for where the drone should go. The velocity control gives the drone a speed and direction vector to follow: 
+
+
+First, with the simulation and drone nodes running, prepare drone 0, as had been showing previously:
+```
+ros2 run swarm_mavsdk_ros2 drone_command startup --drone 0
+ros2 run swarm_mavsdk_ros2 drone_command arm --drone 0
+ros2 run swarm_mavsdk_ros2 drone_command takeoff --drone 0
+```
+
+To command a drone position, give an absolute destination, for example the code below commands the drone to go 2 m North, 0 m East, and 2 m above the local origin. 
+```
+ros2 run swarm_mavsdk_ros2 drone_command position --drone 0 --ned 2 0 -2
+```
+
+To move the drone forward (or backwards, left, right, up, or down, as shown previously):
+```
+ros2 run swarm_mavsdk_ros2 drone_command forward 2 --drone 0 --mode position
+```
+
+The code below moves the drone North at a speed of 0.5 m/s, East and vertically at 0 m/s; this control represents continuous motion until a new command is sent.
+```
+ros2 run swarm_mavsdk_ros2 drone_command velocity --drone 0 --ned 0.5 0 0
+``` 
+
+To stop the drone, but does not exit the simulation: 
+```
+ros2 run swarm_mavsdk_ros2 drone_command stop --drone 0
+```
+
+The code below commands a 2 m forward movement with a speed of .4 m/s, and the drone stops moving after reaching its desired displacement. 
+```
+ros2 run swarm_mavsdk_ros2 drone_command forward 2 --drone 0 --mode velocity --speed 0.4
+```
+
+The same commands are applicable for a swarm. For example:
+```
+ros2 run swarm_mavsdk_ros2 swarm_command velocity --n 3 --ned 0.4 0 0
+ros2 run swarm_mavsdk_ros2 swarm_command stop --n 3
+```
+
 # Miscellaneous
 
 As an aside, sometimes there are artificats of other simulation which cause the drone swarm to not instantiate in a Gazebo world, simply enter the following commands into terminal:
