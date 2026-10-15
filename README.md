@@ -1,5 +1,5 @@
 # Drone_Benchmark
-MagpieMark: A Novel Sim-to-Real Benchmarking System for Single and Swarm Drone Test-Beds
+MagpieMark: A Novel Sim-to-Real Benchmarking System for Single and Mutli-UAV Test-Beds
 
 # The Goal of This Project
 
