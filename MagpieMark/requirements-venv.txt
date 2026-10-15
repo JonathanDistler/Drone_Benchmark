@@ -1,0 +1,6 @@
+# Python additions for Ubuntu 24.04 / system ROS Jazzy.
+# Create with /usr/bin/python3 -m venv --system-site-packages .venv.
+MAVProxy==1.8.74
+pymavlink==2.4.49
+future==1.0.0
+pytest==8.4.2

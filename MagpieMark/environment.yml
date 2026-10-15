@@ -1,0 +1,31 @@
+name: drone-ros-jazzy
+channels:
+  - robostack-jazzy
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - ros-jazzy-ros-base
+  - ros-jazzy-geometry-msgs
+  - ros-jazzy-nav-msgs
+  - ros-jazzy-std-msgs
+  - ros-jazzy-std-srvs
+  - ros-jazzy-rcl-interfaces
+  - ros-jazzy-rosidl-default-generators
+  - ros-jazzy-rosidl-default-runtime
+  - ros-jazzy-ament-cmake
+  - colcon-common-extensions
+  - compilers
+  - cmake
+  - ninja
+  - make
+  - pkg-config
+  - setuptools<80
+  - future
+  - pip
+  - numpy
+  # Jazzy's launch_testing pytest plugin still uses the pre-pytest-9 path hook.
+  - pytest<9
+  - pip:
+      - MAVProxy==1.8.74
+      - pymavlink==2.4.49

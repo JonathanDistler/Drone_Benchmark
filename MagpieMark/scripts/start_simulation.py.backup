@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""Own a PX4/Gazebo swarm lifecycle, using system ROS or activated RoboStack."""
+
+import argparse
+import math
+import os
+from pathlib import Path
+import shutil
+import signal
+import subprocess
+import sys
+import time
+
+
+PROJECT = Path(__file__).resolve().parents[1]
+
+# Existing native Micro XRCE-DDS Agent installation.
+XRCE_WS = Path.home() / "px4_ros_uxrce_dds_ws"
+
+XRCE_AGENT_BIN = (
+    XRCE_WS
+    / "install"
+    / "microxrcedds_agent"
+    / "bin"
+    / "MicroXRCEAgent"
+)
+
+XRCE_AGENT_LIB = (
+    XRCE_WS
+    / "install"
+    / "microxrcedds_agent"
+    / "lib"
+)
+
+ROS_JAZZY_LIB = Path("/opt/ros/jazzy/lib")
+
+
+def source_environment(environment, *paths):
+    """
+    Source vendor environment hooks and return the resulting environment.
+
+    Bash is used only to read environment hooks, not to launch services.
+    """
+    result = subprocess.run(
+        [
+            "/bin/bash",
+            "--noprofile",
+            "--norc",
+            "-c",
+            'for file in "$@"; do source "$file" >&2 || exit; done; env -0',
+            "environment",
+            *map(str, paths),
+        ],
+        env=environment,
+        check=True,
+        stdout=subprocess.PIPE,
+    )
+
+    return dict(
+        item.split("=", 1)
+        for item in result.stdout.decode().split("\0")
+        if item
+    )
+
+
+def system_environment():
+    """
+    Construct a clean native Ubuntu environment.
+
+    Conda/ROS overlay variables are removed so PX4, Gazebo, and other native
+    programs do not accidentally load libraries from the Conda RoboStack
+    environment.
+    """
+    environment = os.environ.copy()
+
+    for key in list(environment):
+        if key.startswith(
+            (
+                "CONDA",
+                "ROS_",
+                "AMENT_",
+                "COLCON_",
+                "CMAKE_PREFIX",
+            )
+        ) or key in (
+            "PYTHONPATH",
+            "PYTHONHOME",
+            "LD_LIBRARY_PATH",
+            "VIRTUAL_ENV",
+            "PX4_GZ_STANDALONE",
+            "RMW_IMPLEMENTATION",
+        ):
+            environment.pop(key, None)
+
+    environment["PATH"] = (
+        "/usr/local/sbin:"
+        "/usr/local/bin:"
+        "/usr/sbin:"
+        "/usr/bin:"
+        "/sbin:"
+        "/bin"
+    )
+
+    return environment
+
+
+def agent_environment():
+    """
+    Construct the native environment used specifically by MicroXRCEAgent.
+
+    The agent was built in:
+
+        ~/px4_ros_uxrce_dds_ws
+
+    and requires both its own shared libraries and the Fast DDS/Fast CDR
+    libraries installed with ROS 2 Jazzy.
+
+    These paths are scoped only to the MicroXRCEAgent process.
+    """
+    environment = system_environment()
+
+    # Make the existing MicroXRCEAgent executable visible.
+    environment["PATH"] = (
+        str(XRCE_AGENT_BIN.parent)
+        + ":"
+        + environment["PATH"]
+    )
+
+    # These are the exact library paths that allowed the existing agent to run.
+    environment["LD_LIBRARY_PATH"] = ":".join(
+        [
+            str(XRCE_AGENT_LIB),
+            str(ROS_JAZZY_LIB),
+        ]
+    )
+
+    return environment
+
+
+def find_microxrce_agent():
+    """
+    Locate the Micro XRCE-DDS Agent.
+
+    Prefer the known workspace installation. Fall back to a native PATH lookup.
+    """
+    if XRCE_AGENT_BIN.is_file():
+        return str(XRCE_AGENT_BIN)
+
+    environment = agent_environment()
+
+    found = shutil.which(
+        "MicroXRCEAgent",
+        path=environment["PATH"],
+    )
+
+    if found is not None:
+        return found
+
+    raise RuntimeError(
+        "MicroXRCEAgent must be installed on the system PATH or at:\n"
+        f"  {XRCE_AGENT_BIN}"
+    )

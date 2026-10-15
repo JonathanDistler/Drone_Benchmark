@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+
+<sdf version="1.10">
+    <world name="drone_obstacle_course">
+
+        <!-- ===================================================== -->
+        <!-- PHYSICS -->
+        <!-- ===================================================== -->
+
+        <physics name="physics" type="ode">
+            <max_step_size>0.001</max_step_size>
+            <real_time_factor>1.0</real_time_factor>
+        </physics>
+
+
+        <!-- ===================================================== -->
+        <!-- ENVIRONMENT -->
+        <!-- ===================================================== -->
+
+        <scene>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <background>0.72 0.80 0.72 1</background>
+            <shadows>false</shadows>
+        </scene>
+
+
+        <!-- ===================================================== -->
+        <!-- GROUND -->
+        <!-- ===================================================== -->
+
+        <model name="ground">
+            <static>true</static>
+
+            <link name="ground_link">
+
+                <collision name="ground_collision">
+                    <geometry>
+                        <plane>
+                            <normal>0 0 1</normal>
+                            <size>100 100</size>
+                        </plane>
+                    </geometry>
+                </collision>
+
+                <visual name="ground_visual">
+                    <geometry>
+                        <plane>
+                            <normal>0 0 1</normal>
+                            <size>100 100</size>
+                        </plane>
+                    </geometry>
+
+                    <material>
+                        <ambient>0.10 0.30 0.08 1</ambient>
+                        <diffuse>0.18 0.45 0.12 1</diffuse>
+                        <specular>0.01 0.01 0.01 1</specular>
+                    </material>
+                </visual>
+
+            </link>
+        </model>
+
+
+        <!-- ===================================================== -->
+        <!-- MINIMAL LIGHT -->
+        <!-- ===================================================== -->
+
+        <light name="main_light" type="directional">
+            <pose>0 0 20 0.3 0.2 0</pose>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0.02 0.02 0.02 1</specular>
+            <direction>-0.3 0.2 -1</direction>
+            <cast_shadows>false</cast_shadows>
+        </light>
+
+
+        <!-- ===================================================== -->
+        <!-- TEST 1 -->
+        <!--                                                       -->
+        <!-- CONE WEAVING                                          -->
+        <!--                                                       -->
+        <!-- Flight direction = +X                                -->
+        <!-- Lane centered at Y = 0                               -->
+        <!-- Three cones separated by 3 m along X                 -->
+        <!-- ===================================================== -->
+
+        <include>
+            <uri>model://cone_flag</uri>
+            <name>cone_1</name>
+            <pose>2 0 0 1.57079632679 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cone_flag</uri>
+            <name>cone_2</name>
+            <pose>5 0 0 1.57079632679 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cone_flag</uri>
+            <name>cone_3</name>
+            <pose>8 0 0 1.57079632679 0 0</pose>
+        </include>
+
+
+        <!-- ===================================================== -->
+        <!-- TEST 2 -->
+        <!--                                                       -->
+        <!-- FLAG                                                   -->
+        <!--                                                       -->
+        <!-- Same flight direction (+X)                           -->
+        <!-- Separate lane at Y = -8                              -->
+        <!-- ===================================================== -->
+
+        <include>
+            <uri>model://cone_flag</uri>
+            <name>test_flag</name>
+            <pose>5 -8 0 1.57079632679 0 0</pose>
+        </include>
+
+
+        <!-- ===================================================== -->
+        <!-- TEST 3 -->
+        <!--                                                       -->
+        <!-- BOX                                                    -->
+        <!--                                                       -->
+        <!-- Same flight direction (+X)                           -->
+        <!-- Separate lane at Y = +8                              -->
+        <!-- Opening faces +X                                      -->
+        <!-- Bottom = 1.3335 m above ground                       -->
+        <!-- ===================================================== -->
+
+        <include>
+            <uri>model://box</uri>
+            <name>test_box</name>
+
+            <pose>
+                5 8 0 1.57079632679 0 1.57079632679
+            </pose>
+
+        </include>
+
+
+        <!-- ===================================================== -->
+        <!-- START MARKERS                                          -->
+        <!-- ===================================================== -->
+
+        <!-- TEST 1 START -->
+
+        <model name="test1_start">
+            <static>true</static>
+
+            <link name="link">
+
+                <visual name="marker">
+
+                    <pose>-1 0 0.01 0 0 0</pose>
+
+                    <geometry>
+                        <box>
+                            <size>0.08 3 0.02</size>
+                        </box>
+                    </geometry>
+
+                    <material>
+                        <ambient>0.05 0.05 0.05 1</ambient>
+                        <diffuse>0.10 0.10 0.10 1</diffuse>
+                    </material>
+
+                </visual>
+
+            </link>
+        </model>
+
+
+        <!-- TEST 2 START -->
+
+        <model name="test2_start">
+            <static>true</static>
+
+            <link name="link">
+
+                <visual name="marker">
+
+                    <pose>-1 -8 0.01 0 0 0</pose>
+
+                    <geometry>
+                        <box>
+                            <size>0.08 3 0.02</size>
+                        </box>
+                    </geometry>
+
+                    <material>
+                        <ambient>0.05 0.05 0.05 1</ambient>
+                        <diffuse>0.10 0.10 0.10 1</diffuse>
+                    </material>
+
+                </visual>
+
+            </link>
+        </model>
+
+
+        <!-- TEST 3 START -->
+
+        <model name="test3_start">
+            <static>true</static>
+
+            <link name="link">
+
+                <visual name="marker">
+
+                    <pose>-1 8 0.01 0 0 0</pose>
+
+                    <geometry>
+                        <box>
+                            <size>0.08 3 0.02</size>
+                        </box>
+                    </geometry>
+
+                    <material>
+                        <ambient>0.05 0.05 0.05 1</ambient>
+                        <diffuse>0.10 0.10 0.10 1</diffuse>
+                    </material>
+
+                </visual>
+
+            </link>
+        </model>
+
+
+    </world>
+</sdf>

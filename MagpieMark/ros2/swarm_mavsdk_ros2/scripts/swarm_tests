@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+SWARM_VENV="${SWARM_VENV:-$HOME/swarm_venv}"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NODE_SCRIPT="$SCRIPT_DIR/../swarm_mavsdk_ros2/swarm_node.py"
+
+if [ ! -x "$SWARM_VENV/bin/python3" ]; then
+    echo
+    echo "[ERROR] Missing swarm virtual environment:"
+    echo "        $SWARM_VENV"
+    echo
+    echo "Create it with:"
+    echo "    python3 -m venv --system-site-packages ~/swarm_venv"
+    echo "    ~/swarm_venv/bin/pip install -U pip"
+    echo "    ~/swarm_venv/bin/pip install mavsdk"
+    exit 1
+fi
+
+exec "$SWARM_VENV/bin/python3" "$NODE_SCRIPT" "$@"

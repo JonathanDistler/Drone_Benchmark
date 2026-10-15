@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>swarm_mavsdk_ros2</name>
+  <version>0.2.0</version>
+  <description>Modular ROS 2 / PX4 drone and swarm benchmark.</description>
+  <maintainer email="jonathandistler@users.noreply.github.com">Jonathan Distler</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <depend>rclpy</depend>
+  <depend>rosidl_runtime_py</depend>
+  <depend>rcl_interfaces</depend>
+  <depend>px4_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>std_msgs</depend>
+  <depend>rosgraph_msgs</depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
