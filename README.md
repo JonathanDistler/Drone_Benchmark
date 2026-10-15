@@ -263,24 +263,14 @@ swarm() {
 }
 
 swarm startup
-
 swarm arm
-
 swarm takeoff
-
-
 swarm forward 1
-
 swarm backward 1
-
 swarm left 1
-
 swarm right 1
-
 swarm up 1
-
 swarm down 1
-
 swarm stop
 ```
 
